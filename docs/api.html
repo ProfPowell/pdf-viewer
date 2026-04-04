@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API - pdf-viewer</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <h1>&lt;pdf-viewer&gt;</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="demos.html">Demos</a>
+      <a href="api.html">API</a>
+      <button class="theme-toggle" id="theme-toggle">Toggle Theme</button>
+    </nav>
+  </header>
+
+  <main>
+    <section>
+      <h2>Attributes</h2>
+      <table class="api-table">
+        <thead>
+          <tr><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>src</code></td><td>string</td><td><code>""</code></td><td>URL of the PDF document</td></tr>
+          <tr><td><code>page</code></td><td>number</td><td><code>1</code></td><td>Current page (1-based)</td></tr>
+          <tr><td><code>zoom</code></td><td>string</td><td><code>"fit-width"</code></td><td>Zoom level or mode (<code>fit-width</code>, <code>fit-page</code>, <code>auto</code>, or a number)</td></tr>
+          <tr><td><code>mode</code></td><td>string</td><td>auto</td><td>Color scheme: <code>light</code> or <code>dark</code>. Omit for auto-detection</td></tr>
+          <tr><td><code>view</code></td><td>string</td><td><code>"single"</code></td><td>View mode: <code>single</code> or <code>continuous</code></td></tr>
+          <tr><td><code>show-toolbar</code></td><td>boolean</td><td><code>true</code></td><td>Show/hide the toolbar</td></tr>
+          <tr><td><code>show-thumbnails</code></td><td>boolean</td><td><code>false</code></td><td>Show the thumbnail sidebar</td></tr>
+          <tr><td><code>show-search</code></td><td>boolean</td><td><code>false</code></td><td>Show the search bar</td></tr>
+          <tr><td><code>no-download</code></td><td>boolean</td><td><code>false</code></td><td>Hide the download button</td></tr>
+          <tr><td><code>no-print</code></td><td>boolean</td><td><code>false</code></td><td>Hide the print button</td></tr>
+          <tr><td><code>title</code></td><td>string</td><td><code>""</code></td><td>Title shown in the toolbar</td></tr>
+          <tr><td><code>lazy</code></td><td>boolean</td><td><code>false</code></td><td>Defer loading until visible</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Properties</h2>
+      <table class="api-table">
+        <thead>
+          <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>src</code></td><td>string</td><td>Get/set PDF URL</td></tr>
+          <tr><td><code>page</code></td><td>number</td><td>Get/set current page number</td></tr>
+          <tr><td><code>zoom</code></td><td>string</td><td>Get/set zoom level</td></tr>
+          <tr><td><code>mode</code></td><td>string</td><td>Get/set color mode</td></tr>
+          <tr><td><code>view</code></td><td>string</td><td>Get/set view mode</td></tr>
+          <tr><td><code>showToolbar</code></td><td>boolean</td><td>Whether toolbar is visible (read-only)</td></tr>
+          <tr><td><code>showThumbnails</code></td><td>boolean</td><td>Whether thumbnails are shown (read-only)</td></tr>
+          <tr><td><code>showSearch</code></td><td>boolean</td><td>Whether search is open (read-only)</td></tr>
+          <tr><td><code>noDownload</code></td><td>boolean</td><td>Whether download is disabled (read-only)</td></tr>
+          <tr><td><code>noPrint</code></td><td>boolean</td><td>Whether print is disabled (read-only)</td></tr>
+          <tr><td><code>viewerTitle</code></td><td>string</td><td>Title text (read-only)</td></tr>
+          <tr><td><code>lazy</code></td><td>boolean</td><td>Whether lazy loading is on (read-only)</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Methods</h2>
+      <table class="api-table">
+        <thead>
+          <tr><th>Method</th><th>Returns</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>nextPage()</code></td><td>void</td><td>Navigate to next page</td></tr>
+          <tr><td><code>prevPage()</code></td><td>void</td><td>Navigate to previous page</td></tr>
+          <tr><td><code>goToPage(n)</code></td><td>void</td><td>Navigate to page <em>n</em></td></tr>
+          <tr><td><code>getPageCount()</code></td><td>number</td><td>Get total page count</td></tr>
+          <tr><td><code>getCurrentPage()</code></td><td>number</td><td>Get current page number</td></tr>
+          <tr><td><code>zoomIn()</code></td><td>void</td><td>Zoom in one step</td></tr>
+          <tr><td><code>zoomOut()</code></td><td>void</td><td>Zoom out one step</td></tr>
+          <tr><td><code>setZoom(level)</code></td><td>void</td><td>Set zoom level or mode</td></tr>
+          <tr><td><code>setData(source)</code></td><td>Promise</td><td>Load from ArrayBuffer, Uint8Array, or File</td></tr>
+          <tr><td><code>openFile()</code></td><td>void</td><td>Open file picker dialog</td></tr>
+          <tr><td><code>download()</code></td><td>Promise</td><td>Download the PDF</td></tr>
+          <tr><td><code>print()</code></td><td>Promise</td><td>Print the PDF</td></tr>
+          <tr><td><code>search(query)</code></td><td>Promise</td><td>Search for text</td></tr>
+          <tr><td><code>clearSearch()</code></td><td>void</td><td>Clear search results</td></tr>
+          <tr><td><code>toggleFullscreen()</code></td><td>void</td><td>Toggle fullscreen mode</td></tr>
+          <tr><td><code>toggleThumbnails()</code></td><td>void</td><td>Toggle thumbnail sidebar</td></tr>
+          <tr><td><code>toggleSearch()</code></td><td>void</td><td>Toggle search bar</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Events</h2>
+      <table class="api-table">
+        <thead>
+          <tr><th>Event</th><th>Detail</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>pdf-loaded</code></td><td><code>{ url, pageCount, title }</code></td><td>PDF document loaded successfully</td></tr>
+          <tr><td><code>pdf-load-error</code></td><td><code>{ url, error }</code></td><td>PDF failed to load</td></tr>
+          <tr><td><code>page-change</code></td><td><code>{ page, previousPage, pageCount }</code></td><td>Page navigation occurred</td></tr>
+          <tr><td><code>zoom-change</code></td><td><code>{ zoom, previousZoom }</code></td><td>Zoom level changed</td></tr>
+          <tr><td><code>view-change</code></td><td><code>{ view }</code></td><td>View mode changed</td></tr>
+          <tr><td><code>file-opened</code></td><td><code>{ name, size }</code></td><td>File opened via drag-drop or picker</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>CSS Custom Properties</h2>
+      <table class="api-table">
+        <thead>
+          <tr><th>Property</th><th>Default (light)</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>--pdf-viewer-bg</code></td><td><code>#ffffff</code></td><td>Component background</td></tr>
+          <tr><td><code>--pdf-viewer-toolbar-bg</code></td><td><code>#f6f8fa</code></td><td>Toolbar background</td></tr>
+          <tr><td><code>--pdf-viewer-border-color</code></td><td><code>#d1d5da</code></td><td>Border color</td></tr>
+          <tr><td><code>--pdf-viewer-text-color</code></td><td><code>#24292e</code></td><td>Primary text color</td></tr>
+          <tr><td><code>--pdf-viewer-text-muted</code></td><td><code>#586069</code></td><td>Secondary text color</td></tr>
+          <tr><td><code>--pdf-viewer-accent-color</code></td><td><code>#2563eb</code></td><td>Accent/interactive color</td></tr>
+          <tr><td><code>--pdf-viewer-hover-bg</code></td><td><code>#f3f4f6</code></td><td>Hover background</td></tr>
+          <tr><td><code>--pdf-viewer-content-bg</code></td><td><code>#e8e8e8</code></td><td>Viewport background</td></tr>
+          <tr><td><code>--pdf-viewer-sidebar-bg</code></td><td><code>#f0f0f0</code></td><td>Sidebar background</td></tr>
+          <tr><td><code>--pdf-viewer-sidebar-width</code></td><td><code>200px</code></td><td>Sidebar width</td></tr>
+          <tr><td><code>--pdf-viewer-toolbar-height</code></td><td><code>40px</code></td><td>Toolbar height</td></tr>
+          <tr><td><code>--pdf-viewer-font-family</code></td><td><code>system-ui</code></td><td>Font family</td></tr>
+          <tr><td><code>--pdf-viewer-shadow</code></td><td>subtle shadow</td><td>Page shadow</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>CSS Parts</h2>
+      <table class="api-table">
+        <thead>
+          <tr><th>Part</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>toolbar</code></td><td>The toolbar area</td></tr>
+          <tr><td><code>content</code></td><td>The PDF viewport/content area</td></tr>
+          <tr><td><code>sidebar</code></td><td>The thumbnail sidebar</td></tr>
+          <tr><td><code>search</code></td><td>The search bar</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Keyboard Shortcuts</h2>
+      <table class="api-table">
+        <thead>
+          <tr><th>Key</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>Left / Up / PageUp</code></td><td>Previous page</td></tr>
+          <tr><td><code>Right / Down / PageDown</code></td><td>Next page</td></tr>
+          <tr><td><code>Home</code></td><td>First page</td></tr>
+          <tr><td><code>End</code></td><td>Last page</td></tr>
+          <tr><td><code>+ / =</code></td><td>Zoom in</td></tr>
+          <tr><td><code>-</code></td><td>Zoom out</td></tr>
+          <tr><td><code>0</code></td><td>Reset to fit-width</td></tr>
+          <tr><td><code>Ctrl+F / Cmd+F</code></td><td>Toggle search</td></tr>
+          <tr><td><code>Escape</code></td><td>Close search / exit fullscreen</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer>
+    <p>&lt;pdf-viewer&gt; by Prof Thomas Powell. MIT License.</p>
+  </footer>
+
+  <script>
+    const toggle = document.getElementById('theme-toggle')
+    toggle?.addEventListener('click', () => {
+      document.body.classList.toggle('dark')
+      document.documentElement.classList.toggle('dark')
+      localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light')
+    })
+    if (localStorage.getItem('theme') === 'dark') {
+      document.body.classList.add('dark')
+      document.documentElement.classList.add('dark')
+    }
+  </script>
+</body>
+</html>

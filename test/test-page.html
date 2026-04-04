@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>pdf-viewer Test Page</title>
+  <script type="module" src="../src/pdf-viewer.js"></script>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      padding: 20px;
+      margin: 0;
+      background: #f5f5f5;
+    }
+    h2 {
+      margin: 24px 0 8px;
+      font-size: 16px;
+    }
+    pdf-viewer {
+      margin-bottom: 24px;
+    }
+  </style>
+</head>
+<body>
+  <h1>pdf-viewer Test Fixtures</h1>
+
+  <h2>Default (basic src)</h2>
+  <pdf-viewer id="default" src="/test/fixtures/sample.pdf" style="height:500px"></pdf-viewer>
+
+  <h2>With title and toolbar</h2>
+  <pdf-viewer id="with-toolbar" src="/test/fixtures/sample.pdf" title="Test Document" style="height:500px"></pdf-viewer>
+
+  <h2>Dark mode (explicit)</h2>
+  <pdf-viewer id="dark-mode" src="/test/fixtures/sample.pdf" mode="dark" style="height:500px"></pdf-viewer>
+
+  <h2>Continuous view</h2>
+  <pdf-viewer id="continuous" src="/test/fixtures/sample.pdf" view="continuous" style="height:500px"></pdf-viewer>
+
+  <h2>With thumbnails</h2>
+  <pdf-viewer id="thumbnails" src="/test/fixtures/sample.pdf" show-thumbnails style="height:500px"></pdf-viewer>
+
+  <h2>No download / no print</h2>
+  <pdf-viewer id="no-controls" src="/test/fixtures/sample.pdf" no-download no-print style="height:500px"></pdf-viewer>
+
+  <h2>Specific page and zoom</h2>
+  <pdf-viewer id="page-zoom" src="/test/fixtures/sample.pdf" page="2" zoom="1.5" style="height:500px"></pdf-viewer>
+
+  <h2>Lazy loading</h2>
+  <pdf-viewer id="lazy" src="/test/fixtures/sample.pdf" lazy style="height:500px"></pdf-viewer>
+
+  <h2>Empty (no src)</h2>
+  <pdf-viewer id="empty" style="height:400px"></pdf-viewer>
+
+  <h2>Fit page zoom</h2>
+  <pdf-viewer id="fit-page" src="/test/fixtures/sample.pdf" zoom="fit-page" style="height:500px"></pdf-viewer>
+
+  <h2>No toolbar</h2>
+  <pdf-viewer id="no-toolbar" src="/test/fixtures/sample.pdf" show-toolbar="false" style="height:500px"></pdf-viewer>
+</body>
+</html>

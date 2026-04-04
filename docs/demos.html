@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demos - pdf-viewer</title>
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="../src/pdf-viewer.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <h1>&lt;pdf-viewer&gt;</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="demos.html">Demos</a>
+      <a href="api.html">API</a>
+      <button class="theme-toggle" id="theme-toggle">Toggle Theme</button>
+    </nav>
+  </header>
+
+  <main>
+    <section>
+      <h2>Basic Usage</h2>
+      <p>A simple viewer with default settings. Just set the <code>src</code> attribute.</p>
+      <div class="demo-section">
+        <pdf-viewer src="sample.pdf" style="height: 500px"></pdf-viewer>
+      </div>
+      <pre><code>&lt;pdf-viewer src="sample.pdf" style="height: 500px"&gt;&lt;/pdf-viewer&gt;</code></pre>
+    </section>
+
+    <section>
+      <h2>With Thumbnails</h2>
+      <p>Add <code>show-thumbnails</code> to display a sidebar with page previews.</p>
+      <div class="demo-section">
+        <pdf-viewer src="sample.pdf" show-thumbnails style="height: 500px"></pdf-viewer>
+      </div>
+      <pre><code>&lt;pdf-viewer src="sample.pdf" show-thumbnails style="height: 500px"&gt;&lt;/pdf-viewer&gt;</code></pre>
+    </section>
+
+    <section>
+      <h2>Continuous Scroll</h2>
+      <p>Set <code>view="continuous"</code> to scroll through all pages.</p>
+      <div class="demo-section">
+        <pdf-viewer src="sample.pdf" view="continuous" style="height: 500px"></pdf-viewer>
+      </div>
+      <pre><code>&lt;pdf-viewer src="sample.pdf" view="continuous" style="height: 500px"&gt;&lt;/pdf-viewer&gt;</code></pre>
+    </section>
+
+    <section>
+      <h2>Dark Mode</h2>
+      <p>Set <code>mode="dark"</code> or let it auto-detect from the page theme.</p>
+      <div class="demo-section">
+        <pdf-viewer src="sample.pdf" mode="dark" style="height: 500px"></pdf-viewer>
+      </div>
+      <pre><code>&lt;pdf-viewer src="sample.pdf" mode="dark" style="height: 500px"&gt;&lt;/pdf-viewer&gt;</code></pre>
+    </section>
+
+    <section>
+      <h2>Restricted Controls</h2>
+      <p>Use <code>no-download</code> and <code>no-print</code> to hide those buttons.</p>
+      <div class="demo-section">
+        <pdf-viewer src="sample.pdf" no-download no-print style="height: 500px"></pdf-viewer>
+      </div>
+      <pre><code>&lt;pdf-viewer src="sample.pdf" no-download no-print style="height: 500px"&gt;&lt;/pdf-viewer&gt;</code></pre>
+    </section>
+
+    <section>
+      <h2>Custom Zoom</h2>
+      <p>Set an initial zoom level with the <code>zoom</code> attribute.</p>
+      <div class="demo-section">
+        <pdf-viewer src="sample.pdf" zoom="1.5" style="height: 500px"></pdf-viewer>
+      </div>
+      <pre><code>&lt;pdf-viewer src="sample.pdf" zoom="1.5" style="height: 500px"&gt;&lt;/pdf-viewer&gt;</code></pre>
+    </section>
+
+    <section>
+      <h2>Specific Page + Title</h2>
+      <p>Jump to a specific page on load and display a title in the toolbar.</p>
+      <div class="demo-section">
+        <pdf-viewer src="sample.pdf" page="3" title="Zoom Controls" style="height: 500px"></pdf-viewer>
+      </div>
+      <pre><code>&lt;pdf-viewer src="sample.pdf" page="3" title="Zoom Controls" style="height: 500px"&gt;&lt;/pdf-viewer&gt;</code></pre>
+    </section>
+
+    <section>
+      <h2>External Document</h2>
+      <p>A real-world PDF loaded into the viewer with thumbnails enabled.</p>
+      <div class="demo-section">
+        <pdf-viewer src="sample2.pdf" show-thumbnails title="Sample 2" style="height: 600px"></pdf-viewer>
+      </div>
+      <pre><code>&lt;pdf-viewer src="sample2.pdf" show-thumbnails title="Sample 2" style="height: 600px"&gt;&lt;/pdf-viewer&gt;</code></pre>
+    </section>
+
+    <section>
+      <h2>No Toolbar</h2>
+      <p>Hide the toolbar entirely with <code>show-toolbar="false"</code>.</p>
+      <div class="demo-section">
+        <pdf-viewer src="sample.pdf" show-toolbar="false" style="height: 400px"></pdf-viewer>
+      </div>
+      <pre><code>&lt;pdf-viewer src="sample.pdf" show-toolbar="false" style="height: 400px"&gt;&lt;/pdf-viewer&gt;</code></pre>
+    </section>
+
+    <section>
+      <h2>Browse &amp; View</h2>
+      <p>Pick a PDF from your computer to view it right here. You can also drag and drop onto the viewer.</p>
+      <div class="demo-section">
+        <div class="browse-controls">
+          <button class="browse-btn" id="browse-btn">Browse for PDF...</button>
+          <span class="browse-status" id="browse-status"></span>
+        </div>
+        <pdf-viewer id="browse-viewer" style="height: 600px"></pdf-viewer>
+      </div>
+      <pre><code>&lt;button onclick="document.querySelector('pdf-viewer').openFile()"&gt;
+  Browse for PDF...
+&lt;/button&gt;
+&lt;pdf-viewer id="viewer" style="height: 600px"&gt;&lt;/pdf-viewer&gt;
+
+&lt;script&gt;
+  const viewer = document.getElementById('viewer')
+  viewer.addEventListener('file-opened', (e) =&gt; {
+    console.log('Opened:', e.detail.name, e.detail.size, 'bytes')
+  })
+  viewer.addEventListener('pdf-loaded', (e) =&gt; {
+    console.log('Loaded:', e.detail.pageCount, 'pages')
+  })
+&lt;/script&gt;</code></pre>
+    </section>
+
+    <section>
+      <h2>Programmatic Loading</h2>
+      <p>Load PDFs via JavaScript using <code>setData()</code> or <code>openFile()</code>.</p>
+      <pre><code>const viewer = document.querySelector('pdf-viewer')
+
+// From fetch
+const response = await fetch('document.pdf')
+const buffer = await response.arrayBuffer()
+await viewer.setData(buffer)
+
+// From file picker
+viewer.openFile()</code></pre>
+    </section>
+
+    <section>
+      <h2>Event Handling</h2>
+      <pre><code>const viewer = document.querySelector('pdf-viewer')
+
+viewer.addEventListener('pdf-loaded', (e) => {
+  console.log('Loaded:', e.detail.pageCount, 'pages')
+})
+
+viewer.addEventListener('page-change', (e) => {
+  console.log('Page:', e.detail.page, 'of', e.detail.pageCount)
+})
+
+viewer.addEventListener('zoom-change', (e) => {
+  console.log('Zoom:', e.detail.zoom)
+})</code></pre>
+    </section>
+  </main>
+
+  <footer>
+    <p>&lt;pdf-viewer&gt; by Prof Thomas Powell. MIT License.</p>
+  </footer>
+
+  <script>
+    const toggle = document.getElementById('theme-toggle')
+    toggle?.addEventListener('click', () => {
+      document.body.classList.toggle('dark')
+      document.documentElement.classList.toggle('dark')
+      localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light')
+    })
+    if (localStorage.getItem('theme') === 'dark') {
+      document.body.classList.add('dark')
+      document.documentElement.classList.add('dark')
+    }
+
+    // Browse & View demo
+    const browseBtn = document.getElementById('browse-btn')
+    const browseStatus = document.getElementById('browse-status')
+    const browseViewer = document.getElementById('browse-viewer')
+
+    browseBtn?.addEventListener('click', () => {
+      browseViewer.openFile()
+    })
+
+    browseViewer?.addEventListener('file-opened', (e) => {
+      const size = e.detail.size < 1024 * 1024
+        ? (e.detail.size / 1024).toFixed(1) + ' KB'
+        : (e.detail.size / (1024 * 1024)).toFixed(1) + ' MB'
+      browseStatus.textContent = e.detail.name + ' (' + size + ')'
+    })
+
+    browseViewer?.addEventListener('pdf-loaded', (e) => {
+      browseStatus.textContent += ' \u2014 ' + e.detail.pageCount + ' pages'
+    })
+
+    browseViewer?.addEventListener('pdf-load-error', (e) => {
+      browseStatus.textContent = 'Error: ' + e.detail.error
+      browseStatus.classList.add('error')
+    })
+  </script>
+</body>
+</html>
