@@ -162,7 +162,7 @@ export class PdfViewer extends HTMLElement {
     this._isLoading = false
     this._loadError = null
     this._loadProgress = 0
-    this._highlighted = false
+    this._lazyLoaded = false
     this._shellRendered = false
 
     // Observers
@@ -281,7 +281,7 @@ export class PdfViewer extends HTMLElement {
     }
     this._startThemeObserver()
 
-    if (this.lazy && !this._highlighted) {
+    if (this.lazy && !this._lazyLoaded) {
       this._setupLazyObserver()
     } else if (this.src) {
       this._loadDocument(this.src)
@@ -657,8 +657,8 @@ export class PdfViewer extends HTMLElement {
   _setupLazyObserver() {
     this._lazyObserver = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && !this._highlighted) {
-          this._highlighted = true
+        if (entries[0].isIntersecting && !this._lazyLoaded) {
+          this._lazyLoaded = true
           if (this.src) this._loadDocument(this.src)
           this._lazyObserver.disconnect()
         }
@@ -675,11 +675,21 @@ export class PdfViewer extends HTMLElement {
   async _renderPage(pageNum) {
     if (!this._pdfDoc || pageNum < 1 || pageNum > this._pdfDoc.numPages) return
 
-    const page = await this._pdfDoc.getPage(pageNum)
-    const viewport = page.getViewport({ scale: this._currentScale })
-
     const container = this.shadowRoot.querySelector('.page-container')
     if (!container) return
+
+    // Check cache — skip re-render if already rendered at this scale
+    const cached = this._pageCanvases.get(pageNum)
+    if (cached && cached.scale === this._currentScale) {
+      if (this.view === 'single') {
+        container.innerHTML = ''
+        container.appendChild(cached.wrapper)
+      }
+      return
+    }
+
+    const page = await this._pdfDoc.getPage(pageNum)
+    const viewport = page.getViewport({ scale: this._currentScale })
 
     if (this.view === 'single') {
       container.innerHTML = ''
@@ -722,7 +732,7 @@ export class PdfViewer extends HTMLElement {
     ctx.scale(DEVICE_PIXEL_RATIO, DEVICE_PIXEL_RATIO)
 
     await page.render({ canvasContext: ctx, viewport }).promise
-    this._pageCanvases.set(pageNum, canvas)
+    this._pageCanvases.set(pageNum, { canvas, scale: this._currentScale, wrapper: pageWrapper })
 
     // Text layer
     const textLayerDiv = document.createElement('div')
@@ -984,26 +994,17 @@ export class PdfViewer extends HTMLElement {
   }
 
   setZoom(level) {
-    const previousZoom = this.zoom
     if (typeof level === 'number') {
       this.setAttribute('zoom', String(level))
     } else {
       this.setAttribute('zoom', level)
     }
-
-    if (String(level) !== previousZoom) {
-      this.dispatchEvent(
-        new CustomEvent('zoom-change', {
-          detail: { zoom: String(level), previousZoom },
-          bubbles: true,
-          composed: true
-        })
-      )
-    }
   }
 
   async _applyZoom(zoomValue) {
     if (!this._pdfDoc) return
+
+    const previousZoom = String(this._currentScale)
 
     const page = await this._pdfDoc.getPage(this.page)
     const unscaledViewport = page.getViewport({ scale: 1 })
@@ -1031,6 +1032,14 @@ export class PdfViewer extends HTMLElement {
     this._currentScale = scale
     this._updateZoomDisplay()
     await this._renderAllVisiblePages()
+
+    this.dispatchEvent(
+      new CustomEvent('zoom-change', {
+        detail: { zoom: String(scale), previousZoom },
+        bubbles: true,
+        composed: true
+      })
+    )
   }
 
   _findClosestZoomIndex(scale) {
@@ -1148,10 +1157,10 @@ export class PdfViewer extends HTMLElement {
   /*  VIEW MODES                                                       */
   /* ================================================================ */
 
-  _switchView(viewMode) {
+  async _switchView(viewMode) {
     this._pageCanvases.clear()
     this._pageTextLayers.clear()
-    this._renderAllVisiblePages()
+    await this._renderAllVisiblePages()
 
     this.dispatchEvent(
       new CustomEvent('view-change', {
@@ -1387,9 +1396,10 @@ export class PdfViewer extends HTMLElement {
     }
   }
 
-  _handleTouchEnd(e) {
+  async _handleTouchEnd(e) {
     if (this._touchStartDistance > 0 && e.touches.length === 0) {
       this._touchStartDistance = 0
+      await this._renderAllVisiblePages()
       this.setZoom(this._currentScale)
     } else if (e.changedTouches.length === 1 && this.view === 'single') {
       const dx = e.changedTouches[0].clientX - this._touchStartX
@@ -1426,7 +1436,9 @@ export class PdfViewer extends HTMLElement {
 
     if (closestPage !== this.page) {
       const previousPage = this.page
+      this._suppressPageCallback = true
       this.setAttribute('page', String(closestPage))
+      this._suppressPageCallback = false
       this._updatePageInfo(closestPage, this._pdfDoc.numPages)
       this._updateActiveThumbnail(closestPage)
 
