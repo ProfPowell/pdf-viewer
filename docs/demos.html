@@ -5,7 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Demos - pdf-viewer</title>
   <link rel="stylesheet" href="styles.css">
-  <script type="module" src="../src/pdf-viewer.js"></script>
+  <script type="module">
+    const src = location.hostname === 'localhost' || location.hostname === '127.0.0.1'
+      ? '/src/pdf-viewer.js'
+      : 'https://unpkg.com/@profpowell/pdf-viewer'
+    import(/* @vite-ignore */ src)
+  </script>
 </head>
 <body>
   <header class="site-header">
