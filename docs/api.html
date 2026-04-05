@@ -1,21 +1,25 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>API - pdf-viewer</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <header class="site-header">
-    <h1>&lt;pdf-viewer&gt;</h1>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="demos.html">Demos</a>
-      <a href="api.html">API</a>
-      <button class="theme-toggle" id="theme-toggle">Toggle Theme</button>
-    </nav>
-  </header>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>API - pdf-viewer</title>
+    <meta name="description" content="API reference for the pdf-viewer web component." />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <nav>
+        <a href="index.html" class="nav-brand">&lt;pdf-viewer&gt;</a>
+        <div class="nav-links">
+          <a href="index.html">Home</a>
+          <a href="demos.html">Demos</a>
+          <a href="api.html" class="active">API</a>
+          <a href="https://github.com/ProfPowell/pdf-viewer" target="_blank" rel="noopener">GitHub</a>
+          <button class="theme-toggle" aria-label="Toggle theme">&#x1f313;</button>
+        </div>
+      </nav>
+    </header>
 
   <main>
     <section>
@@ -169,21 +173,27 @@
     </section>
   </main>
 
-  <footer>
-    <p>&lt;pdf-viewer&gt; by Prof Thomas Powell. MIT License.</p>
-  </footer>
+    <footer class="site-footer">
+      <p>
+        MIT License &middot;
+        <a href="https://github.com/ProfPowell/pdf-viewer" target="_blank" rel="noopener">View on GitHub</a>
+      </p>
+    </footer>
 
-  <script>
-    const toggle = document.getElementById('theme-toggle')
-    toggle?.addEventListener('click', () => {
-      document.body.classList.toggle('dark')
-      document.documentElement.classList.toggle('dark')
-      localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light')
-    })
-    if (localStorage.getItem('theme') === 'dark') {
-      document.body.classList.add('dark')
-      document.documentElement.classList.add('dark')
-    }
-  </script>
-</body>
+    <script>
+      (function() {
+        const toggle = document.querySelector('.theme-toggle');
+        const storageKey = 'pdf-viewer-theme';
+        const saved = localStorage.getItem(storageKey);
+        if (saved === 'dark') {
+          document.body.classList.add('dark');
+        }
+        toggle?.addEventListener('click', () => {
+          document.body.classList.toggle('dark');
+          const isDark = document.body.classList.contains('dark');
+          localStorage.setItem(storageKey, isDark ? 'dark' : 'light');
+        });
+      })();
+    </script>
+  </body>
 </html>

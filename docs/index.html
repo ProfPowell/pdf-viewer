@@ -1,127 +1,166 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>pdf-viewer - Web Component</title>
-  <link rel="stylesheet" href="styles.css">
-  <script type="module">
-    const src = location.hostname === 'localhost' || location.hostname === '127.0.0.1'
-      ? '/src/pdf-viewer.js'
-      : 'https://unpkg.com/@profpowell/pdf-viewer'
-    import(/* @vite-ignore */ src)
-  </script>
-</head>
-<body>
-  <header class="site-header">
-    <h1>&lt;pdf-viewer&gt;</h1>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="demos.html">Demos</a>
-      <a href="api.html">API</a>
-      <button class="theme-toggle" id="theme-toggle">Toggle Theme</button>
-    </nav>
-  </header>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pdf-viewer - PDF viewer web component</title>
+    <meta name="description" content="A standalone web component for viewing PDF documents. Built on PDF.js with navigation, zoom, search, thumbnails, and full theme support." />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <nav>
+        <a href="index.html" class="nav-brand">&lt;pdf-viewer&gt;</a>
+        <div class="nav-links">
+          <a href="index.html" class="active">Home</a>
+          <a href="demos.html">Demos</a>
+          <a href="api.html">API</a>
+          <a href="https://github.com/ProfPowell/pdf-viewer" target="_blank" rel="noopener">GitHub</a>
+          <button class="theme-toggle" aria-label="Toggle theme">&#x1f313;</button>
+        </div>
+      </nav>
+    </header>
 
-  <main>
-    <section class="hero">
-      <h2>&lt;pdf-viewer&gt;</h2>
-      <p>A standalone web component for viewing PDF documents. Built on PDF.js with navigation, zoom, search, thumbnails, and full theme support.</p>
-    </section>
+    <main>
+      <section class="hero">
+        <h1>&lt;pdf-viewer&gt;</h1>
+        <p class="tagline">A standalone web component for viewing PDF documents</p>
+        <div class="hero-demo">
+          <pdf-viewer src="sample2.pdf" title="Sample Document" show-thumbnails style="height: 550px"></pdf-viewer>
+        </div>
+        <div class="hero-actions">
+          <a href="demos.html" class="btn primary">View Demos</a>
+          <a href="api.html" class="btn secondary">API Documentation</a>
+        </div>
+      </section>
 
-    <section>
-      <h2>Features</h2>
-      <div class="features">
-        <div class="feature-card">
-          <h4>PDF.js Powered</h4>
-          <p>High-fidelity PDF rendering via Mozilla's PDF.js library</p>
+      <section>
+        <h2>Features</h2>
+        <div class="feature-grid">
+          <a href="demos.html#basic" class="feature-card">
+            <h3>PDF.js Powered</h3>
+            <p>High-fidelity PDF rendering via Mozilla's PDF.js library.</p>
+          </a>
+          <a href="demos.html#continuous" class="feature-card">
+            <h3>Navigation</h3>
+            <p>Page-by-page or continuous scroll with keyboard shortcuts.</p>
+          </a>
+          <a href="demos.html#zoom" class="feature-card">
+            <h3>Zoom Controls</h3>
+            <p>Fit-width, fit-page, manual zoom, and pinch-to-zoom on touch.</p>
+          </a>
+          <a href="demos.html#search" class="feature-card">
+            <h3>Text Search</h3>
+            <p>Full-text search with match highlighting and navigation.</p>
+          </a>
+          <a href="demos.html#thumbnails" class="feature-card">
+            <h3>Thumbnails</h3>
+            <p>Sidebar with lazy-rendered page thumbnails for quick navigation.</p>
+          </a>
+          <a href="demos.html#dark" class="feature-card">
+            <h3>Dark Mode</h3>
+            <p>Auto-detects page theme or set explicitly via attribute.</p>
+          </a>
+          <a href="demos.html#browse" class="feature-card">
+            <h3>File Input</h3>
+            <p>Drag-and-drop, file picker, or programmatic ArrayBuffer loading.</p>
+          </a>
+          <a href="api.html#css-properties" class="feature-card">
+            <h3>Fully Themeable</h3>
+            <p>13+ CSS custom properties for complete visual customization.</p>
+          </a>
         </div>
-        <div class="feature-card">
-          <h4>Navigation</h4>
-          <p>Page-by-page or continuous scroll with keyboard shortcuts</p>
-        </div>
-        <div class="feature-card">
-          <h4>Zoom Controls</h4>
-          <p>Fit-width, fit-page, manual zoom, and pinch-to-zoom</p>
-        </div>
-        <div class="feature-card">
-          <h4>Text Search</h4>
-          <p>Full-text search with match highlighting and navigation</p>
-        </div>
-        <div class="feature-card">
-          <h4>Thumbnails</h4>
-          <p>Sidebar with lazy-rendered page thumbnails</p>
-        </div>
-        <div class="feature-card">
-          <h4>Dark Mode</h4>
-          <p>Auto-detects page theme or set explicitly via attribute</p>
-        </div>
-        <div class="feature-card">
-          <h4>File Input</h4>
-          <p>Drag-and-drop, file picker, or programmatic loading</p>
-        </div>
-        <div class="feature-card">
-          <h4>Framework Agnostic</h4>
-          <p>Works with any framework or vanilla HTML</p>
-        </div>
-      </div>
-    </section>
+      </section>
 
-    <section>
-      <h2>Live Demo</h2>
-      <div class="demo-section">
-        <pdf-viewer src="sample.pdf" title="Sample Document" style="height: 500px"></pdf-viewer>
-      </div>
-    </section>
+      <section class="quick-start">
+        <h2>Quick Start</h2>
 
-    <section class="quick-start">
-      <h2>Quick Start</h2>
-      <h3>Install</h3>
-      <pre><code>npm install @profpowell/pdf-viewer</code></pre>
+        <h3>Installation</h3>
+        <p>Install via npm:</p>
+        <code-block language="bash">npm install @profpowell/pdf-viewer</code-block>
 
-      <h3>Usage</h3>
-      <pre><code>&lt;script type="module"&gt;
-  import '@profpowell/pdf-viewer'
-&lt;/script&gt;
+        <p>Or include via CDN:</p>
+        <code-block language="html">&lt;script type="module" src="https://unpkg.com/@profpowell/pdf-viewer"&gt;&lt;/script&gt;</code-block>
 
-&lt;pdf-viewer src="document.pdf"&gt;&lt;/pdf-viewer&gt;</code></pre>
+        <h3>Basic Usage</h3>
+        <code-block language="html">&lt;pdf-viewer src="document.pdf" style="height: 600px"&gt;&lt;/pdf-viewer&gt;</code-block>
 
-      <h3>With options</h3>
-      <pre><code>&lt;pdf-viewer
+        <h3>With Options</h3>
+        <code-block language="html">&lt;pdf-viewer
   src="report.pdf"
   page="1"
   zoom="fit-width"
   show-thumbnails
   title="Annual Report"
   style="height: 600px"
-&gt;&lt;/pdf-viewer&gt;</code></pre>
-    </section>
+&gt;&lt;/pdf-viewer&gt;</code-block>
 
-    <section>
-      <h2>Related Components</h2>
+        <div class="hero-actions">
+          <a href="demos.html" class="btn primary">See All Demos</a>
+          <a href="api.html" class="btn secondary">Full API Reference</a>
+        </div>
+      </section>
+
+      <section>
+        <h2>Related Components</h2>
+        <p>Part of the ProfPowell vanilla web components suite:</p>
+        <div class="related-grid">
+          <a href="https://profpowell.github.io/browser-window/" class="related-card">
+            <strong>&lt;browser-window&gt;</strong>
+            Safari-style browser window for demos
+          </a>
+          <a href="https://profpowell.github.io/code-block/" class="related-card">
+            <strong>&lt;code-block&gt;</strong>
+            Syntax highlighting with copy button
+          </a>
+          <a href="https://profpowell.github.io/code-playground/" class="related-card">
+            <strong>&lt;code-playground&gt;</strong>
+            Live HTML/CSS/JS editor with preview
+          </a>
+          <a href="https://profpowell.github.io/terminal-window/" class="related-card">
+            <strong>&lt;terminal-window&gt;</strong>
+            Interactive terminal emulator
+          </a>
+          <a href="https://profpowell.github.io/browser-console/" class="related-card">
+            <strong>&lt;browser-console&gt;</strong>
+            Console log display component
+          </a>
+          <a href="https://profpowell.github.io/http-component/" class="related-card">
+            <strong>&lt;http-component&gt;</strong>
+            HTTP request/response viewer
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
       <p>
-        <a href="https://github.com/ProfPowell/browser-window">browser-window</a> |
-        <a href="https://github.com/ProfPowell/code-block">code-block</a> |
-        <a href="https://github.com/ProfPowell/code-playground">code-playground</a>
+        MIT License &middot;
+        <a href="https://github.com/ProfPowell/pdf-viewer" target="_blank" rel="noopener">View on GitHub</a>
       </p>
-    </section>
-  </main>
+    </footer>
 
-  <footer>
-    <p>&lt;pdf-viewer&gt; by Prof Thomas Powell. MIT License.</p>
-  </footer>
-
-  <script>
-    const toggle = document.getElementById('theme-toggle')
-    toggle?.addEventListener('click', () => {
-      document.body.classList.toggle('dark')
-      document.documentElement.classList.toggle('dark')
-      localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light')
-    })
-    if (localStorage.getItem('theme') === 'dark') {
-      document.body.classList.add('dark')
-      document.documentElement.classList.add('dark')
-    }
-  </script>
-</body>
+    <script type="module">
+      const src = location.hostname === 'localhost' || location.hostname === '127.0.0.1'
+        ? '/src/pdf-viewer.js'
+        : 'https://unpkg.com/@profpowell/pdf-viewer';
+      import(/* @vite-ignore */ src);
+    </script>
+    <script type="module" src="https://unpkg.com/@profpowell/code-block"></script>
+    <script>
+      (function() {
+        const toggle = document.querySelector('.theme-toggle');
+        const storageKey = 'pdf-viewer-theme';
+        const saved = localStorage.getItem(storageKey);
+        if (saved === 'dark') {
+          document.body.classList.add('dark');
+        }
+        toggle?.addEventListener('click', () => {
+          document.body.classList.toggle('dark');
+          const isDark = document.body.classList.contains('dark');
+          localStorage.setItem(storageKey, isDark ? 'dark' : 'light');
+        });
+      })();
+    </script>
+  </body>
 </html>
