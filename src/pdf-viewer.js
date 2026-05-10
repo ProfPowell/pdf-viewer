@@ -34,7 +34,16 @@
  * @cssprop [--pdf-viewer-sidebar-width] - Sidebar width
  * @cssprop [--pdf-viewer-toolbar-height] - Toolbar height
  * @cssprop [--pdf-viewer-font-family] - Font family
+ * @cssprop [--pdf-viewer-font-size] - Base font size
  * @cssprop [--pdf-viewer-shadow] - Page shadow
+ * @cssprop [--pdf-viewer-highlight] - Search-result highlight color
+ * @cssprop [--pdf-viewer-highlight-active] - Current search-result highlight color
+ *
+ * Vanilla Breeze compatibility: when present, this component consumes VB design
+ * tokens (`--color-*`, `--size-*`, `--font-size-*`, `--radius-*`, `--shadow-*`,
+ * `--border-width-thin`) automatically with sensible pixel/color fallbacks, so
+ * theme packs re-skin the chrome without any extra wiring. The `--pdf-viewer-*`
+ * properties above act as a per-instance override layer on top of the tokens.
  *
  * @fires pdf-loaded - PDF document loaded successfully
  * @fires pdf-load-error - PDF document failed to load
@@ -1558,7 +1567,7 @@ export class PdfViewer extends HTMLElement {
         width: 100%;
         height: 600px;
         font-family: var(--pdf-viewer-font-family, var(--font-sans, system-ui, -apple-system, sans-serif));
-        font-size: 14px;
+        font-size: var(--pdf-viewer-font-size, var(--font-size-base, 14px));
         line-height: 1.4;
         contain: layout;
 
@@ -1570,11 +1579,14 @@ export class PdfViewer extends HTMLElement {
         --_pv-text-muted: var(--color-text-muted, #586069);
         --_pv-accent: var(--color-interactive, #2563eb);
         --_pv-hover-bg: var(--color-surface-hover, #f3f4f6);
+        /* Content-bg kept distinct from sidebar-bg to preserve the depth hierarchy (sidebar reads as a raised panel against the content well). User can override via --pdf-viewer-content-bg. */
         --_pv-content-bg: #e8e8e8;
         --_pv-sidebar-bg: var(--color-surface-sunken, #f0f0f0);
         --_pv-sidebar-width: 200px;
         --_pv-toolbar-height: 40px;
-        --_pv-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        /* Heavier shadow used in dark mode for contrast against darker surfaces. */
+        --_pv-shadow: var(--shadow-m, 0 2px 8px rgba(0, 0, 0, 0.15));
+        /* Page paper stays white in both light and dark mode by PDF convention (matches print). Intentional non-themed carve-out. */
         --_pv-page-bg: #ffffff;
       }
 
@@ -1586,9 +1598,11 @@ export class PdfViewer extends HTMLElement {
         --_pv-text-muted: var(--color-text-muted, #98989d);
         --_pv-accent: var(--color-interactive, #5b9bf5);
         --_pv-hover-bg: var(--color-surface-hover, #3a3a3c);
+        /* Dark mode inverts the depth: content is lighter than sidebar. */
         --_pv-content-bg: #3a3a3c;
         --_pv-sidebar-bg: var(--color-surface-sunken, #1c1c1e);
-        --_pv-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+        --_pv-shadow: var(--shadow-l, 0 2px 8px rgba(0, 0, 0, 0.4));
+        /* see light-mode comment — page paper stays white */
         --_pv-page-bg: #ffffff;
         color-scheme: dark;
       }
@@ -1604,7 +1618,7 @@ export class PdfViewer extends HTMLElement {
           --_pv-hover-bg: var(--color-surface-hover, #3a3a3c);
           --_pv-content-bg: #3a3a3c;
           --_pv-sidebar-bg: var(--color-surface-sunken, #1c1c1e);
-          --_pv-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+          --_pv-shadow: var(--shadow-l, 0 2px 8px rgba(0, 0, 0, 0.4));
           --_pv-page-bg: #ffffff;
           color-scheme: dark;
         }
@@ -1616,8 +1630,8 @@ export class PdfViewer extends HTMLElement {
         width: 100%;
         height: 100%;
         background: var(--pdf-viewer-bg, var(--_pv-bg));
-        border: 1px solid var(--pdf-viewer-border-color, var(--_pv-border));
-        border-radius: 8px;
+        border: var(--border-width-thin, 1px) solid var(--pdf-viewer-border-color, var(--_pv-border));
+        border-radius: var(--radius-m, 8px);
         overflow: hidden;
         color: var(--pdf-viewer-text-color, var(--_pv-text));
       }
@@ -1626,12 +1640,12 @@ export class PdfViewer extends HTMLElement {
       .toolbar {
         display: flex;
         align-items: center;
-        gap: 4px;
-        padding: 4px 8px;
+        gap: var(--size-2xs, 4px);
+        padding: var(--size-2xs, 4px) var(--size-xs, 8px);
         height: var(--pdf-viewer-toolbar-height, var(--_pv-toolbar-height));
         min-height: var(--pdf-viewer-toolbar-height, var(--_pv-toolbar-height));
         background: var(--pdf-viewer-toolbar-bg, var(--_pv-toolbar-bg));
-        border-bottom: 1px solid var(--pdf-viewer-border-color, var(--_pv-border));
+        border-bottom: var(--border-width-thin, 1px) solid var(--pdf-viewer-border-color, var(--_pv-border));
         user-select: none;
         flex-shrink: 0;
       }
@@ -1639,14 +1653,14 @@ export class PdfViewer extends HTMLElement {
       .toolbar-group {
         display: flex;
         align-items: center;
-        gap: 2px;
+        gap: var(--size-3xs, 2px);
       }
 
       .toolbar-divider {
         width: 1px;
-        height: 20px;
+        height: var(--size-m, 20px);
         background: var(--pdf-viewer-border-color, var(--_pv-border));
-        margin: 0 4px;
+        margin: 0 var(--size-2xs, 4px);
       }
 
       .toolbar-spacer {
@@ -1654,13 +1668,13 @@ export class PdfViewer extends HTMLElement {
       }
 
       .toolbar-title {
-        font-size: 13px;
+        font-size: var(--font-size-sm, 13px);
         color: var(--pdf-viewer-text-muted, var(--_pv-text-muted));
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
         max-width: 200px;
-        margin-right: 8px;
+        margin-right: var(--size-xs, 8px);
       }
 
       .btn {
@@ -1671,8 +1685,8 @@ export class PdfViewer extends HTMLElement {
         background: transparent;
         color: var(--pdf-viewer-text-color, var(--_pv-text));
         cursor: pointer;
-        border-radius: 4px;
-        padding: 4px;
+        border-radius: var(--radius-s, 4px);
+        padding: var(--size-2xs, 4px);
         transition: background-color 0.15s;
       }
 
@@ -1702,19 +1716,19 @@ export class PdfViewer extends HTMLElement {
       .page-info {
         display: flex;
         align-items: center;
-        gap: 4px;
-        font-size: 13px;
+        gap: var(--size-2xs, 4px);
+        font-size: var(--font-size-sm, 13px);
       }
 
       .page-input {
         width: 40px;
         text-align: center;
-        border: 1px solid var(--pdf-viewer-border-color, var(--_pv-border));
-        border-radius: 4px;
+        border: var(--border-width-thin, 1px) solid var(--pdf-viewer-border-color, var(--_pv-border));
+        border-radius: var(--radius-s, 4px);
         background: var(--pdf-viewer-bg, var(--_pv-bg));
         color: var(--pdf-viewer-text-color, var(--_pv-text));
-        font-size: 13px;
-        padding: 2px 4px;
+        font-size: var(--font-size-sm, 13px);
+        padding: var(--size-3xs, 2px) var(--size-2xs, 4px);
         -moz-appearance: textfield;
       }
 
@@ -1729,7 +1743,7 @@ export class PdfViewer extends HTMLElement {
       }
 
       .zoom-level {
-        font-size: 13px;
+        font-size: var(--font-size-sm, 13px);
         min-width: 42px;
         text-align: center;
         color: var(--pdf-viewer-text-muted, var(--_pv-text-muted));
@@ -1739,10 +1753,10 @@ export class PdfViewer extends HTMLElement {
       .search-bar {
         display: none;
         align-items: center;
-        gap: 8px;
-        padding: 6px 12px;
+        gap: var(--size-xs, 8px);
+        padding: var(--size-xs, 6px) var(--size-s, 12px);
         background: var(--pdf-viewer-toolbar-bg, var(--_pv-toolbar-bg));
-        border-bottom: 1px solid var(--pdf-viewer-border-color, var(--_pv-border));
+        border-bottom: var(--border-width-thin, 1px) solid var(--pdf-viewer-border-color, var(--_pv-border));
         flex-shrink: 0;
       }
 
@@ -1753,13 +1767,18 @@ export class PdfViewer extends HTMLElement {
       .search-input-wrap {
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: var(--size-xs, 6px);
         flex: 1;
         max-width: 300px;
-        border: 1px solid var(--pdf-viewer-border-color, var(--_pv-border));
-        border-radius: 4px;
-        padding: 4px 8px;
+        border: var(--border-width-thin, 1px) solid var(--pdf-viewer-border-color, var(--_pv-border));
+        border-radius: var(--radius-s, 4px);
+        padding: var(--size-2xs, 4px) var(--size-xs, 8px);
         background: var(--pdf-viewer-bg, var(--_pv-bg));
+      }
+
+      .search-input-wrap:focus-within {
+        outline: 2px solid var(--pdf-viewer-accent-color, var(--_pv-accent));
+        outline-offset: -2px;
       }
 
       .search-input-wrap svg {
@@ -1772,12 +1791,12 @@ export class PdfViewer extends HTMLElement {
         border: none;
         background: transparent;
         color: var(--pdf-viewer-text-color, var(--_pv-text));
-        font-size: 13px;
+        font-size: var(--font-size-sm, 13px);
         outline: none;
       }
 
       .search-count {
-        font-size: 12px;
+        font-size: var(--font-size-xs, 12px);
         color: var(--pdf-viewer-text-muted, var(--_pv-text-muted));
         white-space: nowrap;
       }
@@ -1796,7 +1815,7 @@ export class PdfViewer extends HTMLElement {
         width: var(--pdf-viewer-sidebar-width, var(--_pv-sidebar-width));
         min-width: var(--pdf-viewer-sidebar-width, var(--_pv-sidebar-width));
         background: var(--pdf-viewer-sidebar-bg, var(--_pv-sidebar-bg));
-        border-right: 1px solid var(--pdf-viewer-border-color, var(--_pv-border));
+        border-right: var(--border-width-thin, 1px) solid var(--pdf-viewer-border-color, var(--_pv-border));
         overflow-y: auto;
         flex-shrink: 0;
       }
@@ -1806,23 +1825,23 @@ export class PdfViewer extends HTMLElement {
       }
 
       .sidebar-content {
-        padding: 8px;
+        padding: var(--size-xs, 8px);
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 8px;
+        gap: var(--size-xs, 8px);
       }
 
       .thumb-wrapper {
         cursor: pointer;
         border: 2px solid transparent;
-        border-radius: 4px;
-        padding: 4px;
+        border-radius: var(--radius-s, 4px);
+        padding: var(--size-2xs, 4px);
         transition: border-color 0.15s;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 4px;
+        gap: var(--size-2xs, 4px);
       }
 
       .thumb-wrapper:hover {
@@ -1835,12 +1854,12 @@ export class PdfViewer extends HTMLElement {
 
       .thumb-canvas {
         display: block;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+        box-shadow: var(--shadow-s, 0 1px 3px rgba(0, 0, 0, 0.15));
         background: var(--_pv-page-bg);
       }
 
       .thumb-label {
-        font-size: 11px;
+        font-size: var(--font-size-2xs, 11px);
         color: var(--pdf-viewer-text-muted, var(--_pv-text-muted));
       }
 
@@ -1858,8 +1877,8 @@ export class PdfViewer extends HTMLElement {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 16px;
-        padding: 20px;
+        gap: var(--size-s, 16px);
+        padding: var(--size-m, 20px);
       }
 
       .page-wrapper {
@@ -1928,7 +1947,7 @@ export class PdfViewer extends HTMLElement {
         justify-content: center;
         align-items: center;
         flex-direction: column;
-        gap: 12px;
+        gap: var(--size-s, 12px);
         z-index: 10;
       }
 
@@ -1950,15 +1969,15 @@ export class PdfViewer extends HTMLElement {
       }
 
       .loading-text {
-        font-size: 13px;
+        font-size: var(--font-size-sm, 13px);
         color: var(--pdf-viewer-text-muted, var(--_pv-text-muted));
       }
 
       .progress-bar {
         width: 200px;
-        height: 4px;
+        height: var(--size-2xs, 4px);
         background: var(--pdf-viewer-border-color, var(--_pv-border));
-        border-radius: 2px;
+        border-radius: var(--radius-xs, 2px);
         overflow: hidden;
       }
 
@@ -1978,7 +1997,7 @@ export class PdfViewer extends HTMLElement {
         justify-content: center;
         align-items: center;
         flex-direction: column;
-        gap: 12px;
+        gap: var(--size-s, 12px);
         z-index: 10;
       }
 
@@ -1987,20 +2006,20 @@ export class PdfViewer extends HTMLElement {
       }
 
       .error-message {
-        font-size: 14px;
-        color: #e53e3e;
+        font-size: var(--font-size-base, 14px);
+        color: var(--color-error, #e53e3e);
         text-align: center;
         max-width: 300px;
       }
 
       .retry-btn {
-        padding: 6px 16px;
+        padding: var(--size-xs, 6px) var(--size-s, 16px);
         background: var(--pdf-viewer-accent-color, var(--_pv-accent));
         color: #ffffff;
         border: none;
-        border-radius: 4px;
+        border-radius: var(--radius-s, 4px);
         cursor: pointer;
-        font-size: 13px;
+        font-size: var(--font-size-sm, 13px);
       }
 
       .retry-btn:hover {
@@ -2029,23 +2048,23 @@ export class PdfViewer extends HTMLElement {
       .empty-content svg {
         width: 48px;
         height: 48px;
-        margin-bottom: 12px;
+        margin-bottom: var(--size-s, 12px);
         opacity: 0.4;
       }
 
       .empty-content p {
-        margin: 4px 0;
+        margin: var(--size-2xs, 4px) 0;
       }
 
       .empty-hint {
-        font-size: 12px;
+        font-size: var(--font-size-xs, 12px);
       }
 
       .empty-hint code {
         background: var(--pdf-viewer-hover-bg, var(--_pv-hover-bg));
-        padding: 1px 4px;
-        border-radius: 3px;
-        font-size: 12px;
+        padding: 1px var(--size-2xs, 4px);
+        border-radius: var(--radius-xs, 3px);
+        font-size: var(--font-size-xs, 12px);
       }
 
       /* ---- Drop zone ---- */
@@ -2055,7 +2074,7 @@ export class PdfViewer extends HTMLElement {
         inset: 0;
         background: color-mix(in srgb, var(--pdf-viewer-accent-color, var(--_pv-accent)) 10%, transparent);
         border: 2px dashed var(--pdf-viewer-accent-color, var(--_pv-accent));
-        border-radius: 8px;
+        border-radius: var(--radius-m, 8px);
         justify-content: center;
         align-items: center;
         z-index: 20;
@@ -2069,9 +2088,9 @@ export class PdfViewer extends HTMLElement {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 8px;
+        gap: var(--size-xs, 8px);
         color: var(--pdf-viewer-accent-color, var(--_pv-accent));
-        font-size: 16px;
+        font-size: var(--font-size-l, 16px);
         font-weight: 500;
       }
 
@@ -2082,13 +2101,13 @@ export class PdfViewer extends HTMLElement {
 
       /* ---- Search highlight ---- */
       .search-highlight {
-        background: rgba(255, 213, 0, 0.4);
+        background: var(--pdf-viewer-highlight, rgba(255, 213, 0, 0.4));
         position: absolute;
         pointer-events: none;
       }
 
       .search-highlight.current {
-        background: rgba(255, 150, 0, 0.6);
+        background: var(--pdf-viewer-highlight-active, rgba(255, 150, 0, 0.6));
       }
     `
   }

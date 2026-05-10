@@ -1,7 +1,7 @@
 {
   "name": "@profpowell/pdf-viewer",
-  "version": "0.1.0",
-  "description": "A PDF viewer web component wrapping PDF.js with navigation, zoom, search, thumbnails, and theme support",
+  "version": "0.2.0",
+  "description": "A PDF viewer web component wrapping PDF.js with navigation, zoom, search, thumbnails, dark mode, and Vanilla Breeze design-token compatibility",
   "type": "module",
   "main": "dist/pdf-viewer.js",
   "module": "dist/pdf-viewer.js",
@@ -44,6 +44,8 @@
     "pdf",
     "pdfjs",
     "dark-mode",
+    "vanilla-breeze",
+    "design-tokens",
     "profpowell-web-components"
   ],
   "author": "Prof Thomas Powell",
